@@ -106,7 +106,7 @@ function setup() {
 }
 
 function draw() {
-    background(color(0)); // Define a cor de fundo
+    background(color(230)); // Define a cor de fundo
     bola.update(); // Atualiza a posição da bola
     bola.desenha(color1, color2, color3); // Desenha a bola com as cores aleatórias
     raquete1.update(); // Atualiza a posição da raquete
