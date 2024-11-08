@@ -51,7 +51,7 @@ class Computador {
 // Classe BOLA
 class Bola {
     constructor() {
-        this.r = 20; // Raio da bola
+        this.r = 15; // Raio da bola
         this.reset(); // Inicializa a posição e velocidade da bola
     }
 
@@ -68,6 +68,10 @@ class Bola {
         // Atualiza a posição da bola
         this.x += this.vx; 
         this.y += this.vy; 
+
+        // Rotaciona a bola de acordo com a velocidade x e y
+        this.angle = atan2(this.vy, this.vx);
+
         // Verifica colisão com as bordas laterais e reseta a bola
         if (this.x < this.r || this.x > width - this.r) { 
             this.reset(); 
@@ -95,20 +99,27 @@ class Bola {
     }
 
     desenha() {   
-        // Desenha a bola com a imagem correspondente
-        image(bolaImagem, this.x - this.r, this.y - this.r, this.r * 2, this.r * 2); 
+        // Desenha a bola com a imagem correspondente, a bola rotaciona conforme a direção
+        push();
+        translate(this.x, this.y);
+        rotate(frameCount / 5);
+        image(bolaImagem, -this.r, -this.r, this.r * 2, this.r * 2);
+        pop();
     }
 }
 
 let bola;
 let raquete1;
 let computador;
+let fundoImagem;
 
 function preload() {
     // Carrega as imagens dos elementos do jogo
-    bolaImagem = loadImage('assets/pong/bola.png');
-    jogadorImagem = loadImage('assets/pong/barra01.png');
-    computadorImagem = loadImage('assets/pong/barra02.png');
+    bolaImagem = loadImage('sprites/pong/bola.png');
+    jogadorImagem = loadImage('sprites/pong/barra01.png');
+    computadorImagem = loadImage('sprites/pong/barra02.png');
+    fundoImagem = loadImage('sprites/pong/fundo2.png');
+
 }
 
 function setup() {
@@ -121,8 +132,34 @@ function setup() {
 }
 
 function draw() {
-    // Define a cor de fundo
-    background(color(50)); 
+
+    // Define as dimensões da imagem original
+    let imgWidth = 800;
+    let imgHeight = 400;
+    // Calcula a proporção da imagem original
+    let imgRatio = imgWidth / imgHeight;
+    // Calcula a proporção da tela (canvas)
+    let cnvRatio = width / height;
+    // Inicializa as coordenadas e dimensões da imagem ajustada
+    let imgX = 0;
+    let imgY = 0;
+    let imgW = width;
+    let imgH = height;
+
+    // Ajusta as dimensões da imagem para manter a proporção correta
+    if (cnvRatio > imgRatio) {
+        // Se a proporção da tela for maior que a da imagem, ajusta a altura da imagem
+        imgH = imgWidth / cnvRatio;
+        imgY = (imgHeight - imgH) / 2;
+    } else {
+        // Se a proporção da tela for menor ou igual à da imagem, ajusta a largura da imagem
+        imgW = imgHeight * cnvRatio;
+        imgX = (imgWidth - imgW) / 2;
+    }
+
+    // Desenha a imagem ajustada na tela
+    image(fundoImagem, imgX, imgY, imgW, imgH);
+    
     // Atualiza e desenha a bola
     bola.update(); 
     bola.desenha(); 
