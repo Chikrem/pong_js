@@ -132,15 +132,6 @@ function setup() {
 }
 
 function draw() {
-<<<<<<< HEAD
-    background(color(230)); // Define a cor de fundo
-    bola.update(); // Atualiza a posição da bola
-    bola.desenha(color1, color2, color3); // Desenha a bola com as cores aleatórias
-    raquete1.update(); // Atualiza a posição da raquete
-    raquete1.desenha(); // Desenha a raquete
-    computador.update(); // Atualiza a posição da raquete do computador
-    computador.desenha(); // Desenha a raquete do computador
-=======
 
     // Define as dimensões da imagem original
     let imgWidth = 800;
@@ -178,5 +169,4 @@ function draw() {
     // Atualiza e desenha a raquete do computador
     computador.update(); 
     computador.desenha(); 
->>>>>>> sprites
 }
