@@ -1,8 +1,3 @@
-// Gera cores RGB aleatórias
-color1 = Math.floor(Math.random() * 256);
-color2 = Math.floor(Math.random() * 256);
-color3 = Math.floor(Math.random() * 256);
-
 // Classe RAQUETE
 class Raquete {
     constructor(x) {
@@ -13,14 +8,18 @@ class Raquete {
     }
 
     update() {
-        this.y = mouseY; // Define a posição da raquete como a posição do mouse
-        this.y = constrain(this.y, this.h / 2, height - this.h / 2); // Limita a posição da raquete à tela
+        // Faz a raquete seguir o mouse e limita a posição da raquete à tela
+        this.y = mouseY;
+        this.y = constrain(this.y, this.h / 2, height - this.h / 2);
     }
 
     desenha() {
-        fill(255); // Define a cor da raquete
-        rectMode(CENTER); // Define o modo de desenho do retângulo
-        rect(this.x, this.y, this.w, this.h); // Desenha a raquete
+        // Desenha a raquete com a imagem do jogador ou do computador
+        if (this.x < width / 2) {
+            image(jogadorImagem, this.x, this.y - this.h / 2, this.w, this.h);
+        } else {
+            image(computadorImagem, this.x, this.y - this.h / 2, this.w, this.h);
+        }
     }
 }
 
@@ -34,63 +33,70 @@ class Computador {
     }
 
     update() {
-  // Define a posição da raquete como a posição da bola com velocidade constante
+        // Define a posição da raquete como a posição da bola com velocidade constante
         this.y = bola.y * 0.8;
-
         this.y = constrain(this.y, this.h / 2, height - this.h / 2); // Limita a posição da raquete à tela
     }
 
     desenha() {
-        fill(255); // Define a cor da raquete
-        rectMode(CENTER); // Define o modo de desenho do retângulo
-        rect(this.x, this.y, this.w, this.h); // Desenha a raquete
+        // Desenha a raquete com a imagem do jogador ou do computador
+        if (this.x < width / 2) {
+            image(jogadorImagem, this.x, this.y - this.h / 2, this.w, this.h);
+        } else {
+            image(computadorImagem, this.x, this.y - this.h / 2, this.w, this.h);
+        }
     }
 }
 
 // Classe BOLA
 class Bola {
     constructor() {
-        this.r = 25; // Raio da bola
+        this.r = 20; // Raio da bola
         this.reset(); // Inicializa a posição e velocidade da bola
     }
 
     reset() {
-        this.x = width / 2; // Posição inicial no centro da tela (eixo x)
-        this.y = height / 2; // Posição inicial no centro da tela (eixo y)
-        this.vx = Math.random() * 10 -3; // Velocidade aleatória no eixo x
-        this.vy = Math.random() * 10 -3; // Velocidade aleatória no eixo y
+        // Define a posição inicial da bola no centro da tela
+        this.x = width / 2; 
+        this.y = height / 2; 
+        // Define uma velocidade aleatória para a bola
+        this.vx = Math.random() * 10 - 3; 
+        this.vy = Math.random() * 10 - 3; 
     }
 
     update() {
-        this.x += this.vx; // Atualiza a posição no eixo x
-        this.y += this.vy; // Atualiza a posição no eixo y
-        if (this.x < this.r || this.x > width - this.r) { // Verifica colisão com as bordas laterais
-            this.reset(); // Reseta a posição e velocidade da bola
+        // Atualiza a posição da bola
+        this.x += this.vx; 
+        this.y += this.vy; 
+        // Verifica colisão com as bordas laterais e reseta a bola
+        if (this.x < this.r || this.x > width - this.r) { 
+            this.reset(); 
         }
-        if (this.y < this.r || this.y > height - this.r) { // Verifica colisão com as bordas superior e inferior
-            this.vy *= -1; // Inverte a direção no eixo y
+        // Verifica colisão com as bordas superior e inferior e inverte a direção
+        if (this.y < this.r || this.y > height - this.r) { 
+            this.vy *= -1; 
         }
 
-        // Verifica colisão com o objeto do tipo RAQUETE
+        // Verifica colisão com a raquete do jogador e inverte a direção
         if (this.x - this.r < raquete1.x + raquete1.w / 2 
             && this.x + this.r > raquete1.x - raquete1.w / 2 
             && this.y - this.r < raquete1.y + raquete1.h / 2 
             && this.y + this.r > raquete1.y - raquete1.h / 2) {
-            this.vx *= -1.1; // Inverte a direção no eixo x
+            this.vx *= -1.1; 
         }
 
-        // Verifica colisão com o objeto do tipo COMPUTADOR
+        // Verifica colisão com a raquete do computador e inverte a direção
         if (this.x - this.r < computador.x + computador.w / 2 
             && this.x + this.r > computador.x - computador.w / 2 
             && this.y - this.r < computador.y + computador.h / 2 
             && this.y + this.r > computador.y - computador.h / 2) {
-            this.vx *= -1.1; // Inverte a direção no eixo x
+            this.vx *= -1.1; 
         }
     }
 
-    desenha(color1, color2, color3) {   
-        fill(color1, color2, color3); // Define a cor da bola
-        ellipse(this.x, this.y, this.r * 2, this.r * 2); // Desenha a bola
+    desenha() {   
+        // Desenha a bola com a imagem correspondente
+        image(bolaImagem, this.x - this.r, this.y - this.r, this.r * 2, this.r * 2); 
     }
 }
 
@@ -98,19 +104,32 @@ let bola;
 let raquete1;
 let computador;
 
+function preload() {
+    // Carrega as imagens dos elementos do jogo
+    bolaImagem = loadImage('assets/pong/bola.png');
+    jogadorImagem = loadImage('assets/pong/barra01.png');
+    computadorImagem = loadImage('assets/pong/barra02.png');
+}
+
 function setup() {
-    createCanvas(800, 400); // Cria o canvas com largura 800 e altura 400
-    bola = new Bola(); // Cria uma nova instância da classe Bola
-    raquete1 = new Raquete(20); // Cria uma nova instância da classe Raquete
-    computador = new Computador(width - 20); // Cria uma nova instância da classe Computador
+    // Cria o canvas com largura 800 e altura 400
+    createCanvas(800, 400); 
+    // Cria as instâncias dos objetos do jogo
+    bola = new Bola(); 
+    raquete1 = new Raquete(20); 
+    computador = new Computador(width - 20); 
 }
 
 function draw() {
-    background(color(50)); // Define a cor de fundo
-    bola.update(); // Atualiza a posição da bola
-    bola.desenha(color1, color2, color3); // Desenha a bola com as cores aleatórias
-    raquete1.update(); // Atualiza a posição da raquete
-    raquete1.desenha(); // Desenha a raquete
-    computador.update(); // Atualiza a posição da raquete do computador
-    computador.desenha(); // Desenha a raquete do computador
+    // Define a cor de fundo
+    background(color(50)); 
+    // Atualiza e desenha a bola
+    bola.update(); 
+    bola.desenha(); 
+    // Atualiza e desenha a raquete do jogador
+    raquete1.update(); 
+    raquete1.desenha(); 
+    // Atualiza e desenha a raquete do computador
+    computador.update(); 
+    computador.desenha(); 
 }
