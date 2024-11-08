@@ -53,6 +53,7 @@ class Bola {
     constructor() {
         this.r = 15; // Raio da bola
         this.reset(); // Inicializa a posição e velocidade da bola
+        
     }
 
     reset() {
@@ -73,8 +74,15 @@ class Bola {
         this.angle = atan2(this.vy, this.vx);
 
         // Verifica colisão com as bordas laterais e reseta a bola
-        if (this.x < this.r || this.x > width - this.r) { 
-            this.reset(); 
+        if (this.x < this.r || this.x > width - this.r) {
+            if (this.x < this.r) {
+                pontosComputador++;
+            } else {
+                pontosJogador++;
+            }
+            golSom.play();
+            falaPontos();
+            this.reset();
         }
         // Verifica colisão com as bordas superior e inferior e inverte a direção
         if (this.y < this.r || this.y > height - this.r) { 
@@ -87,6 +95,8 @@ class Bola {
             && this.y - this.r < raquete1.y + raquete1.h / 2 
             && this.y + this.r > raquete1.y - raquete1.h / 2) {
             this.vx *= -1.1; 
+            quicarSom.play();
+
         }
 
         // Verifica colisão com a raquete do computador e inverte a direção
@@ -95,6 +105,8 @@ class Bola {
             && this.y - this.r < computador.y + computador.h / 2 
             && this.y + this.r > computador.y - computador.h / 2) {
             this.vx *= -1.1; 
+            quicarSom.play();
+
         }
     }
 
@@ -112,6 +124,24 @@ let bola;
 let raquete1;
 let computador;
 let fundoImagem;
+let quicarSom;
+let golSom;
+
+let pontosJogador = 0;
+let pontosComputador = 0;
+
+function falaPontos() {
+    // use speechapi
+    if('speechSynthesis' in window) {
+        let msg;
+        if (pontosJogador > pontosComputador) {
+            msg = new SpeechSynthesisUtterance('Ponto para o Jogador');
+        } else {
+            msg = new SpeechSynthesisUtterance('Ponto para o Computador');
+        }
+        window.speechSynthesis.speak(msg);
+    }
+}
 
 function preload() {
     // Carrega as imagens dos elementos do jogo
@@ -119,6 +149,8 @@ function preload() {
     jogadorImagem = loadImage('sprites/pong/barra01.png');
     computadorImagem = loadImage('sprites/pong/barra02.png');
     fundoImagem = loadImage('sprites/pong/fundo2.png');
+    quicarSom = loadSound('sound/446100__justinvoke__bounce.wav');
+    golSom = loadSound('sound/274178__littlerobotsoundfactory__jingle_win_synth_02.wav');
 
 }
 
